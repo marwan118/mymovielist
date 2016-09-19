@@ -1,7 +1,7 @@
 package org.papaorange.mymovielist.model;
 
 
-public class Movie {
+public class DoubanMovieInfo {
 
 	private String name;
 	

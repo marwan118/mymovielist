@@ -24,15 +24,18 @@ public class LocalMovieInfoCollector {
 		File movieDir = new File(filePath);
 
 		for (String name : movieDir.list()) {
-			System.out.println(name);
-			localMovieInfos.add(new LocalMovieInfo(name, "2011"));
+			// System.out.println(name);
+			localMovieInfos.add(new LocalMovieInfo(name));
 		}
 		return localMovieInfos;
 	}
 
-	public static void main(String[] args) {
+	public static void main(String[] args) throws InterruptedException {
 
-		getLocalMovieInfo();
+		for (LocalMovieInfo mvInfo : getLocalMovieInfo()) {
+			Thread.sleep(2000);	
+			System.out.println(DoubanMovieInfoCollector.getDoubanMovieInfoStringCollectionByName(mvInfo.getMovieName()));
+		}
 
 	}
 }
