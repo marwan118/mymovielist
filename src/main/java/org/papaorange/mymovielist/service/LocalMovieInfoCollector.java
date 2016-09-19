@@ -1,4 +1,4 @@
-package org.papaorange.mymovielist.service.getlocalmovieinfo;
+package org.papaorange.mymovielist.service;
 
 import java.io.File;
 import java.io.IOException;
