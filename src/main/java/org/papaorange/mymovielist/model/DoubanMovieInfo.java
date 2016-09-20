@@ -7,8 +7,12 @@ public class DoubanMovieInfo {
 	private String name;
 
 	private String imgUrl;
+	
+	private String refUrl;
 
 	private String alias;
+	
+	private String year;
 
 	private double ratingValue;
 
@@ -58,6 +62,24 @@ public class DoubanMovieInfo {
 
 	public void setSummaryText(String summaryText) {
 		this.summaryText = summaryText;
+	}
+
+	public String getYear() {
+		return year;
+	}
+
+	public void setYear(String year) {
+		this.year = year;
+	}
+	
+	@JSONField(name="url")
+	public String getRefUrl() {
+		return refUrl;
+	}
+	
+	@JSONField(name="url")
+	public void setRefUrl(String refUrl) {
+		this.refUrl = refUrl;
 	}
 
 }

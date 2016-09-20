@@ -2,9 +2,15 @@ package org.papaorange.mymovielist.service;
 
 import java.io.File;
 import java.io.IOException;
+import java.net.MalformedURLException;
+import java.net.URL;
 import java.util.ArrayList;
 import java.util.List;
 
+import org.jsoup.Jsoup;
+import org.jsoup.nodes.Document;
+import org.jsoup.nodes.Element;
+import org.jsoup.select.Elements;
 import org.papaorange.mymovielist.model.DoubanMovieInfo;
 import org.papaorange.mymovielist.model.LocalMovieInfo;
 import org.papaorange.mymovielist.utils.AppConfigLoader;
@@ -33,7 +39,10 @@ public class MovieInfoCollector {
 		return localMovieInfos;
 	}
 
-	public static DoubanMovieInfo getDoubanMovieInfoObjectCollectionByName(String name) {
+	public static DoubanMovieInfo getDoubanMovieInfoObjectCollectionByName(String name) throws InterruptedException {
+
+		//防止被BAN
+		Thread.sleep(1000);
 
 		String doubanMovieInfo = "";
 		try {
@@ -61,4 +70,37 @@ public class MovieInfoCollector {
 		}
 	}
 
+	public static void updateDetailInfo(DoubanMovieInfo mvInfo) {
+		URL url = null;
+		Document doc = null;
+		try {
+			url = new URL(mvInfo.getRefUrl());
+		} catch (MalformedURLException e) {
+			e.printStackTrace();
+		}
+		try {
+			doc = Jsoup.parse(url, 30000);
+		} catch (IOException e) {
+			e.printStackTrace();
+		}
+		Elements summaryElem = doc.getElementsByAttributeValue("property", "v:summary");
+
+		Elements yearElem = doc.getElementsByClass("year");
+
+		Elements ratingElem = doc.getElementsByAttributeValue("property", "v:average");
+
+//		System.err.println(doc.toString());
+
+		mvInfo.setRatingValue(Double.parseDouble(ratingElem.get(0).text()));
+		mvInfo.setSummaryText(summaryElem.get(0).text().trim());
+		mvInfo.setYear(yearElem.get(0).text().replace("(", "").replace(")", ""));
+		
+	}
+
+	public static void main(String[] args) {
+		DoubanMovieInfo info = new DoubanMovieInfo();
+		info.setRefUrl("https://movie.douban.com/subject/24741412/");
+		updateDetailInfo(info);
+		System.err.println(info.getSummaryText());
+	}
 }

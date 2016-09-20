@@ -18,9 +18,10 @@ public class UpdateMovieDBTaskScheduler {
 
 	private List<DoubanMovieInfo> dbMvInfoList = new ArrayList<DoubanMovieInfo>();
 
-	@Scheduled(fixedRate = 50 * 1000)
+	@Scheduled(fixedRate = 60 * 1000)
 	public void updateMovieDBTask() throws InterruptedException {
 		System.err.println("Updating movieDB.json...");
+		dbMvInfoList.clear();
 		List<LocalMovieInfo> mvList = MovieInfoCollector.getLocalMovieInfo();
 		for (LocalMovieInfo mv : mvList) {
 			String mvName = mv.getMovieName();
@@ -28,8 +29,13 @@ public class UpdateMovieDBTaskScheduler {
 			if (mvName.equals("unknown") && mvYear.equals("unknown")) {
 				continue;
 			}
-			dbMvInfoList.add(MovieInfoCollector.getDoubanMovieInfoObjectCollectionByName(mv.getMovieName()));
-			Thread.sleep(1000);
+			DoubanMovieInfo info = MovieInfoCollector.getDoubanMovieInfoObjectCollectionByName(mv.getMovieName());
+			if(info==null)
+			{
+				continue;
+			}
+			MovieInfoCollector.updateDetailInfo(info);
+			dbMvInfoList.add(info);
 		}
 
 		String dbString = JSON.toJSONString(dbMvInfoList);
