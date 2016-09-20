@@ -40,7 +40,7 @@ public class HttpGetUtil {
 		BufferedReader reader = null;
 		StringBuffer resultBuffer = new StringBuffer();
 		String tempLine = null;
-		System.err.println("get url:" + url);
+		// System.err.println("get url:" + url);
 
 		if (httpURLConnection.getResponseCode() >= 300) {
 			throw new Exception("HTTP Request is not success, Response code is " + httpURLConnection.getResponseCode());
