@@ -7,6 +7,9 @@ import java.net.URL;
 import java.util.ArrayList;
 import java.util.List;
 
+import javax.crypto.Mac;
+
+import org.apache.tomcat.jni.Local;
 import org.jsoup.Jsoup;
 import org.jsoup.nodes.Document;
 import org.jsoup.select.Elements;
@@ -38,15 +41,17 @@ public class MovieInfoCollector {
 		return localMovieInfos;
 	}
 
-	public static DoubanMovieInfo getDoubanMovieInfoObjectCollectionByName(String name) throws InterruptedException {
+	public static DoubanMovieInfo getDoubanMovieInfoObjectCollectionByName(LocalMovieInfo info)
+			throws InterruptedException {
 
-		//防止被BAN
+		// 防止被BAN
 		Thread.sleep(1000);
 
 		String doubanMovieInfo = "";
 		try {
 
-			doubanMovieInfo = HttpGetUtil.doGet(AppConfigLoader.getProp("MovieDBURL") + name.replace(" ", "%20"));
+			doubanMovieInfo = HttpGetUtil
+					.doGet(AppConfigLoader.getProp("MovieDBURL") + info.getMovieName().replace(" ", "%20"));
 		} catch (Exception e) {
 			e.printStackTrace();
 		}
@@ -54,17 +59,33 @@ public class MovieInfoCollector {
 		});
 
 		int mvIdx = 0;
-
+		int[] matchIdxArray = new int[list.size()];
+		boolean fullMatch = false;
 		for (int i = 0; i < list.size(); i++) {
-			if (list.get(i).getAlias().toLowerCase().trim().equals(name.toLowerCase().trim())) {
-				mvIdx = i;
+			if (list.get(i).getAlias().toLowerCase().trim().equals(info.getMovieName().toLowerCase().trim())) {
+				// 记录match的次数与顺序，如果没有全命中，选取第一个matchIdx作为优选结果
+				matchIdxArray[i] = 1;
+				if ((list.get(i).getYear().trim().equals(info.getYear().trim()))) {
+					// 如果名称和年代都相同，条件全命中，跳出循环
+					mvIdx = i;
+					fullMatch = true;
+					break;
+				}
+			}
+		}
+
+		// 未发生全命中，选取第一个命中的index
+		if (fullMatch == false) {
+			for (int i = 0; i < list.size(); i++) {
+				if (matchIdxArray[i] == 1) {
+					mvIdx = i;
+				}
 			}
 		}
 
 		if (list.size() == 0) {
 			return null;
 		} else {
-
 			return list.get(mvIdx);
 		}
 	}
@@ -88,12 +109,12 @@ public class MovieInfoCollector {
 
 		Elements ratingElem = doc.getElementsByAttributeValue("property", "v:average");
 
-//		System.err.println(doc.toString());
+		// System.err.println(doc.toString());
 
 		mvInfo.setRatingValue(Double.parseDouble(ratingElem.get(0).text()));
 		mvInfo.setSummaryText(summaryElem.get(0).text().trim());
 		mvInfo.setYear(yearElem.get(0).text().replace("(", "").replace(")", ""));
-		
+
 	}
 
 	public static void main(String[] args) {

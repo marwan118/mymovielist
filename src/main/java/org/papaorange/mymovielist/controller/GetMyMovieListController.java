@@ -1,6 +1,9 @@
 package org.papaorange.mymovielist.controller;
 
-import org.papaorange.mymovielist.model.DoubanMovieInfo;
+import java.io.BufferedReader;
+import java.io.FileInputStream;
+import java.io.IOException;
+import java.io.InputStreamReader;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
@@ -8,15 +11,24 @@ import org.springframework.web.bind.annotation.RestController;
 public class GetMyMovieListController {
 
 	@RequestMapping("/mymovies")
-	public DoubanMovieInfo getMyMovieList() {
+	public String getMyMovieList() throws IOException {
 
-		DoubanMovieInfo movie = new DoubanMovieInfo();
-		movie.setName("A Good Movie");
-		movie.setRatingValue(8.8);
-		movie.setImgUrl("http://www.baidu.com");
-		movie.setSummaryText("Just a Moive");
+		String jsonString = "";
+		BufferedReader reader = null;
+		FileInputStream in = new FileInputStream("movieDB.json");
 
-		return movie;
+		try {
+			InputStreamReader isr = new InputStreamReader(in, "UTF-8");
+			reader = new BufferedReader(isr);
+			String line = null;
+			while ((line = reader.readLine()) != null) {
+				jsonString += line;
+			}
+
+		} finally {
+			reader.close();
+		}
+		return jsonString;
 	}
 
 }
