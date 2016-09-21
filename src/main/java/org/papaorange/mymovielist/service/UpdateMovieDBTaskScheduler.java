@@ -19,13 +19,36 @@ public class UpdateMovieDBTaskScheduler {
 
 	private List<DoubanMovieInfo> dbMvInfoList = new ArrayList<DoubanMovieInfo>();
 	private List<LocalMovieInfo> localMvInfoList = new ArrayList<LocalMovieInfo>();
+	private boolean firstUpdate = true;
+	private boolean localMvNotChange = true;
 
-	@Scheduled(fixedRate = 60 * 1000)
+	@Scheduled(fixedRate = 30 * 1000)
 	public void updateMovieDBTask() throws InterruptedException {
-		System.err.println("Updating movieDB.json...");
-		dbMvInfoList.clear();
+
+		System.err.println("checking local movie folder...");
 		List<LocalMovieInfo> mvList = MovieInfoCollector.getLocalMovieInfo();
-		localMvInfoList = mvList;
+		if (firstUpdate) {
+			localMvInfoList = mvList;
+			firstUpdate = false;
+			localMvNotChange = false;
+		}
+		if (localMvInfoList.size() == mvList.size()) {
+			for (int i = 0; i < mvList.size(); i++) {
+				if (localMvInfoList.get(i).getFileName().equals(mvList.get(i).getFileName())) {
+					continue;
+				} else {
+					localMvNotChange = true;
+				}
+			}
+		} else {
+			localMvNotChange = true;
+		}
+		if (localMvNotChange == false) {
+			return;
+		}
+		System.err.println("local movie folder changed,updating moviedb...");
+		dbMvInfoList.clear();
+
 		for (LocalMovieInfo mv : mvList) {
 			String mvName = mv.getMovieName();
 			String mvYear = mv.getYear();
@@ -44,19 +67,6 @@ public class UpdateMovieDBTaskScheduler {
 
 		OutputStreamWriter osw = null;
 		FileOutputStream fos = null;
-
-		// FileInputStream in = new FileInputStream(file);
-		// try {
-		// java.nio.channels.FileLock lock = in.getChannel().lock();
-		// try {
-		// Reader reader = new InputStreamReader(in, charset);
-		// ...
-		// } finally {
-		// lock.release();
-		// }
-		// } finally {
-		// in.close();
-		// }
 
 		FileLock lock = null;
 		try {
