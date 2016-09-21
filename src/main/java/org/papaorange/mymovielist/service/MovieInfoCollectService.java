@@ -18,7 +18,7 @@ import org.papaorange.mymovielist.utils.HttpGetUtil;
 import com.alibaba.fastjson.JSON;
 import com.alibaba.fastjson.TypeReference;
 
-public class MovieInfoCollector {
+public class MovieInfoCollectService {
 	public static List<LocalMovieInfo> getLocalMovieInfo() {
 
 		List<LocalMovieInfo> localMovieInfos = new ArrayList<LocalMovieInfo>();

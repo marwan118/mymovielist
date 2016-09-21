@@ -17,20 +17,20 @@ import org.springframework.stereotype.Component;
 import com.alibaba.fastjson.JSON;
 
 @Component
-public class UpdateMovieDBTaskScheduler {
+public class UpdateMovieDBTaskSchedulerService {
 
 	private List<DoubanMovieInfo> dbMvInfoList = new ArrayList<DoubanMovieInfo>();
 	private List<LocalMovieInfo> localMvInfoList = new ArrayList<LocalMovieInfo>();
 	private boolean firstUpdate = true;
 	private boolean localMovieUpdate = false;
-	private static final Logger log = LoggerFactory.getLogger(UpdateMovieDBTaskScheduler.class);
+	private static final Logger log = LoggerFactory.getLogger(UpdateMovieDBTaskSchedulerService.class);
 
 	@Scheduled(fixedRate = 30 * 1000)
 	public void updateMovieDBTask() throws InterruptedException {
 
 		log.info("checking local movie folder...");
 
-		List<LocalMovieInfo> mvList = MovieInfoCollector.getLocalMovieInfo();
+		List<LocalMovieInfo> mvList = MovieInfoCollectService.getLocalMovieInfo();
 		if (firstUpdate) {
 			localMvInfoList = mvList;
 			firstUpdate = false;
@@ -62,11 +62,11 @@ public class UpdateMovieDBTaskScheduler {
 			if (mvName.equals("unknown") && mvYear.equals("unknown")) {
 				continue;
 			}
-			DoubanMovieInfo info = MovieInfoCollector.getDoubanMovieInfoObjectCollectionByName(mv);
+			DoubanMovieInfo info = MovieInfoCollectService.getDoubanMovieInfoObjectCollectionByName(mv);
 			if (info == null) {
 				continue;
 			}
-			MovieInfoCollector.updateDetailInfo(info);
+			MovieInfoCollectService.updateDetailInfo(info);
 			dbMvInfoList.add(info);
 		}
 
