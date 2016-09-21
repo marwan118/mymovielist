@@ -9,6 +9,10 @@ public class MovieList {
 		this.movieList = movieList;
 	}
 
+	public MovieList() {
+		// TODO Auto-generated constructor stub
+	}
+
 	public List<DoubanMovieInfo> getMovieList() {
 		return movieList;
 	}

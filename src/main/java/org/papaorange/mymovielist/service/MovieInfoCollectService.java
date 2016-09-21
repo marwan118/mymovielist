@@ -14,6 +14,7 @@ import org.papaorange.mymovielist.model.DoubanMovieInfo;
 import org.papaorange.mymovielist.model.LocalMovieInfo;
 import org.papaorange.mymovielist.utils.AppConfigLoader;
 import org.papaorange.mymovielist.utils.HttpGetUtil;
+import org.papaorange.mymovielist.utils.ImgDownloader;
 
 import com.alibaba.fastjson.JSON;
 import com.alibaba.fastjson.TypeReference;
@@ -87,7 +88,7 @@ public class MovieInfoCollectService {
 		}
 	}
 
-	public static void updateDetailInfo(DoubanMovieInfo mvInfo) {
+	public static void updateDetailInfo(DoubanMovieInfo mvInfo) throws Exception {
 		URL url = null;
 		Document doc = null;
 		try {
@@ -130,6 +131,7 @@ public class MovieInfoCollectService {
 				e.printStackTrace();
 			}
 			mvInfo.setImgUrl(tmpDoc.getElementsByClass("mainphoto").get(0).getElementsByTag("img").get(0).attr("src"));
+			ImgDownloader.download(mvInfo.getImgUrl());
 		}
 
 		mvInfo.setRatingValue(Double.parseDouble(ratingElem.get(0).text()));

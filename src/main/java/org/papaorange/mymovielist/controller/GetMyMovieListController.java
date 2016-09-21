@@ -5,6 +5,7 @@ import java.io.FileInputStream;
 import java.io.IOException;
 import java.io.InputStreamReader;
 
+import org.papaorange.mymovielist.model.MovieList;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
@@ -14,11 +15,11 @@ import com.alibaba.fastjson.JSON;
 public class GetMyMovieListController {
 
 	@RequestMapping("/mymovies")
-	public Object getMyMovieList() throws IOException {
+	public MovieList getMyMovieList() throws IOException {
 
 		String jsonString = "";
 		BufferedReader reader = null;
-		FileInputStream in = new FileInputStream("movieDB.json");
+		FileInputStream in = new FileInputStream("db/movieDB.json");
 
 		try {
 			InputStreamReader isr = new InputStreamReader(in, "UTF-8");
@@ -32,7 +33,7 @@ public class GetMyMovieListController {
 			reader.close();
 		}
 
-		return JSON.parse(jsonString);
+		return JSON.parseObject(jsonString, MovieList.class);
 	}
 
 }

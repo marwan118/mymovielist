@@ -66,7 +66,12 @@ public class UpdateMovieDBTaskSchedulerService {
 			if (info == null) {
 				continue;
 			}
-			MovieInfoCollectService.updateDetailInfo(info);
+			try {
+				MovieInfoCollectService.updateDetailInfo(info);
+			} catch (Exception e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			}
 			dbMvInfoList.add(info);
 		}
 
@@ -76,7 +81,7 @@ public class UpdateMovieDBTaskSchedulerService {
 		FileOutputStream fos = null;
 
 		try {
-			fos = new FileOutputStream("movieDB.json");
+			fos = new FileOutputStream("db/movieDB.json");
 			osw = new OutputStreamWriter(fos, "UTF-8");
 			osw.write(dbString);
 			osw.flush();

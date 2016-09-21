@@ -45,7 +45,7 @@ public class ImgDownloader {
 			if (httpURLConnection.getContentType().equals("image/jpeg")) {
 				filename = url.substring(url.lastIndexOf("/") + 1);
 			}
-			fileOutputStream = new FileOutputStream(new File(filename));
+			fileOutputStream = new FileOutputStream(new File("./db/" + filename));
 
 			FileCopyUtils.copy(inputStream, fileOutputStream);
 
