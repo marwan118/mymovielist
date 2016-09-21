@@ -43,10 +43,10 @@ public class LocalMovieInfoParser {
 		}
 	}
 
-	public static void main(String[] args) {
-		System.out.println(
-				parseMovieName("13.Hours.The.Secret.Soldiers.Of.Benghazi.2016.1080p.BluRay.x264-Replica[rarbg]"));
-		System.out.println(
-				parseMovieYear("13.Hours.The.Secret.Soldiers.Of.Benghazi.2016.1080p.BluRay.x264-Replica[rarbg]"));
-	}
+//	public static void main(String[] args) {
+//		System.out.println(
+//				parseMovieName("13.Hours.The.Secret.Soldiers.Of.Benghazi.2016.1080p.BluRay.x264-Replica[rarbg]"));
+//		System.out.println(
+//				parseMovieYear("13.Hours.The.Secret.Soldiers.Of.Benghazi.2016.1080p.BluRay.x264-Replica[rarbg]"));
+//	}
 }

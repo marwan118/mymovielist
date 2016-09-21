@@ -8,6 +8,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 import javax.crypto.Mac;
+import javax.lang.model.element.Element;
 
 import org.apache.tomcat.jni.Local;
 import org.jsoup.Jsoup;
@@ -100,6 +101,7 @@ public class MovieInfoCollector {
 		}
 		try {
 			doc = Jsoup.parse(url, 30000);
+			// System.err.println(doc);
 		} catch (IOException e) {
 			e.printStackTrace();
 		}
@@ -109,7 +111,30 @@ public class MovieInfoCollector {
 
 		Elements ratingElem = doc.getElementsByAttributeValue("property", "v:average");
 
-		// System.err.println(doc.toString());
+		String coverUrl = doc.getElementsByClass("nbgnbg").get(0).attr("href");
+
+		{
+			String tempUrl;
+			Document tmpDoc = null;
+			try {
+				tmpDoc = Jsoup.parse(new URL(coverUrl), 30000);
+			} catch (IOException e) {
+				e.printStackTrace();
+			}
+
+			try {
+				int i = 0;
+				do {
+					tempUrl = tmpDoc.getElementsByClass("cover").get(i++).getElementsByTag("a").attr("href");
+					tmpDoc = Jsoup.parse(new URL(tempUrl), 30000);
+				} while (tmpDoc.baseUri().equals("https://movie.douban.com/")
+						|| i < tmpDoc.getElementsByClass("cover").size());
+
+			} catch (IOException e) {
+				e.printStackTrace();
+			}
+			mvInfo.setImgUrl(tmpDoc.getElementsByClass("mainphoto").get(0).getElementsByTag("img").get(0).attr("src"));
+		}
 
 		mvInfo.setRatingValue(Double.parseDouble(ratingElem.get(0).text()));
 		mvInfo.setSummaryText(summaryElem.get(0).text().trim());
@@ -117,10 +142,10 @@ public class MovieInfoCollector {
 
 	}
 
-	public static void main(String[] args) {
-		DoubanMovieInfo info = new DoubanMovieInfo();
-		info.setRefUrl("https://movie.douban.com/subject/24741412/");
-		updateDetailInfo(info);
-		System.err.println(info.getSummaryText());
-	}
+	// public static void main(String[] args) {
+	// DoubanMovieInfo info = new DoubanMovieInfo();
+	// info.setRefUrl("https://movie.douban.com/subject/24741412/");
+	// updateDetailInfo(info);
+	// System.err.println(info.getSummaryText());
+	// }
 }

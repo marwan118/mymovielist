@@ -15,9 +15,10 @@ public class HttpGetUtil {
 	 * @param args
 	 * @throws Exception
 	 */
-	public static void main(String[] args) throws Exception {
-		System.out.println(doGet(AppConfigLoader.getProp("MovieDBURL") + "Louder%20Than%20Bombs"));
-	}
+	// public static void main(String[] args) throws Exception {
+	// System.out.println(doGet(AppConfigLoader.getProp("MovieDBURL") +
+	// "Louder%20Than%20Bombs"));
+	// }
 
 	/**
 	 * Get Request

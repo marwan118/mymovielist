@@ -3,12 +3,13 @@ package org.papaorange.mymovielist.service;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.OutputStreamWriter;
-import java.nio.channels.FileLock;
 import java.util.ArrayList;
 import java.util.List;
 
 import org.papaorange.mymovielist.model.DoubanMovieInfo;
 import org.papaorange.mymovielist.model.LocalMovieInfo;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Component;
 
@@ -20,34 +21,39 @@ public class UpdateMovieDBTaskScheduler {
 	private List<DoubanMovieInfo> dbMvInfoList = new ArrayList<DoubanMovieInfo>();
 	private List<LocalMovieInfo> localMvInfoList = new ArrayList<LocalMovieInfo>();
 	private boolean firstUpdate = true;
-	private boolean localMvNotChange = true;
+	private boolean localMovieUpdate = false;
+	private static final Logger log = LoggerFactory.getLogger(UpdateMovieDBTaskScheduler.class);
 
 	@Scheduled(fixedRate = 30 * 1000)
 	public void updateMovieDBTask() throws InterruptedException {
 
-		System.err.println("checking local movie folder...");
+		log.info("checking local movie folder...");
+
 		List<LocalMovieInfo> mvList = MovieInfoCollector.getLocalMovieInfo();
 		if (firstUpdate) {
 			localMvInfoList = mvList;
 			firstUpdate = false;
-			localMvNotChange = false;
+			localMovieUpdate = true;
 		}
 		if (localMvInfoList.size() == mvList.size()) {
 			for (int i = 0; i < mvList.size(); i++) {
 				if (localMvInfoList.get(i).getFileName().equals(mvList.get(i).getFileName())) {
 					continue;
 				} else {
-					localMvNotChange = true;
+					localMovieUpdate = true;
 				}
 			}
 		} else {
-			localMvNotChange = true;
+			localMovieUpdate = true;
 		}
-		if (localMvNotChange == false) {
+		if (localMovieUpdate == false) {
 			return;
 		}
-		System.err.println("local movie folder changed,updating moviedb...");
+
+		log.info("local movie folder changed,updating moviedb...");
+
 		dbMvInfoList.clear();
+		localMovieUpdate = false;
 
 		for (LocalMovieInfo mv : mvList) {
 			String mvName = mv.getMovieName();
@@ -68,10 +74,8 @@ public class UpdateMovieDBTaskScheduler {
 		OutputStreamWriter osw = null;
 		FileOutputStream fos = null;
 
-		FileLock lock = null;
 		try {
 			fos = new FileOutputStream("movieDB.json");
-			lock = fos.getChannel().lock();
 			osw = new OutputStreamWriter(fos, "UTF-8");
 			osw.write(dbString);
 			osw.flush();
@@ -80,7 +84,6 @@ public class UpdateMovieDBTaskScheduler {
 		} catch (Exception e) {
 			e.printStackTrace();
 		} finally {
-
 			try {
 				if (osw != null) {
 					osw.close();
@@ -88,8 +91,8 @@ public class UpdateMovieDBTaskScheduler {
 				if (fos != null) {
 					fos.close();
 				}
-				lock.release();
 			} catch (IOException exception) {
+				exception.printStackTrace();
 			}
 
 		}
