@@ -1,6 +1,8 @@
-$(document).ready(function($) {
+$(document).ready(function() {
 
-    var movies = $.ajax({ url: "/mymovies", async: false });
-    console.log(movies);
+    $.getJSON('/mymovies', function(data) {
+        console.log(data);
+    });
+
 
 });

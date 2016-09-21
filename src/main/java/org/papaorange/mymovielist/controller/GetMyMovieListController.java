@@ -4,14 +4,18 @@ import java.io.BufferedReader;
 import java.io.FileInputStream;
 import java.io.IOException;
 import java.io.InputStreamReader;
+
+import org.papaorange.mymovielist.model.MovieList;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
+
+import com.alibaba.fastjson.JSON;
 
 @RestController
 public class GetMyMovieListController {
 
 	@RequestMapping("/mymovies")
-	public String getMyMovieList() throws IOException {
+	public Object getMyMovieList() throws IOException {
 
 		String jsonString = "";
 		BufferedReader reader = null;
@@ -28,7 +32,8 @@ public class GetMyMovieListController {
 		} finally {
 			reader.close();
 		}
-		return jsonString;
+
+		return JSON.parse(jsonString);
 	}
 
 }

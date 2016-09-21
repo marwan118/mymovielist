@@ -8,6 +8,7 @@ import java.util.List;
 
 import org.papaorange.mymovielist.model.DoubanMovieInfo;
 import org.papaorange.mymovielist.model.LocalMovieInfo;
+import org.papaorange.mymovielist.model.MovieList;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.scheduling.annotation.Scheduled;
@@ -69,7 +70,7 @@ public class UpdateMovieDBTaskScheduler {
 			dbMvInfoList.add(info);
 		}
 
-		String dbString = JSON.toJSONString(dbMvInfoList);
+		String dbString = JSON.toJSONString(new MovieList(dbMvInfoList));
 
 		OutputStreamWriter osw = null;
 		FileOutputStream fos = null;
