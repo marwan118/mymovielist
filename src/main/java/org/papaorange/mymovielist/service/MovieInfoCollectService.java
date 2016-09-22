@@ -8,7 +8,7 @@ import java.util.List;
 import org.jsoup.Jsoup;
 import org.jsoup.nodes.Document;
 import org.jsoup.select.Elements;
-import org.papaorange.mymovielist.model.DoubanMovieInfo;
+import org.papaorange.mymovielist.model.MyMovieInfo;
 import org.papaorange.mymovielist.model.ImdbImageItem;
 import org.papaorange.mymovielist.model.ImdbMediaViewerModelWrapperObject;
 import org.papaorange.mymovielist.model.LocalMovieInfo;
@@ -39,7 +39,7 @@ public class MovieInfoCollectService {
 		return localMovieInfos;
 	}
 
-	public static DoubanMovieInfo getDoubanMovieInfoObjectCollectionByName(LocalMovieInfo info)
+	public static MyMovieInfo getDoubanMovieInfoObjectCollectionByName(LocalMovieInfo info)
 			throws InterruptedException {
 
 		// 防止被BAN
@@ -53,7 +53,7 @@ public class MovieInfoCollectService {
 		} catch (Exception e) {
 			e.printStackTrace();
 		}
-		List<DoubanMovieInfo> list = JSON.parseObject(doubanMovieInfo, new TypeReference<List<DoubanMovieInfo>>() {
+		List<MyMovieInfo> list = JSON.parseObject(doubanMovieInfo, new TypeReference<List<MyMovieInfo>>() {
 		});
 
 		int mvIdx = 0;
@@ -90,9 +90,10 @@ public class MovieInfoCollectService {
 
 	private static String downloadImgFromIMDB(Document doc) {
 		String imgUrl = null;
-
+		String imdbMovieUrl = null;
+		String filename = null;
 		try {
-			String imdbMovieUrl = doc.getElementsByAttributeValueContaining("href", "http://www.imdb.com/title").get(0)
+			imdbMovieUrl = doc.getElementsByAttributeValueContaining("href", "http://www.imdb.com/title").get(0)
 					.attr("href");
 
 			Document imdbDoc = DocumentHelper.getDocumentByUrl(imdbMovieUrl);
@@ -111,16 +112,18 @@ public class MovieInfoCollectService {
 					break;
 				}
 			}
-			ImgDownloader.download(imgUrl, imdbMovieUrl.substring(imdbMovieUrl.lastIndexOf("/") + 1));
+			filename = imdbMovieUrl.substring(imdbMovieUrl.lastIndexOf("/") + 1) + ".jpg";
+			ImgDownloader.download(imgUrl, filename);
 		} catch (Exception e) {
 			e.printStackTrace();
-			return imgUrl;
+			return null;
 		}
-		return imgUrl;
+		return imgUrl + "#@#@" + filename;
 	}
 
 	public static String downloadImgFromDouban(String coverUrl) {
 		String imgUrl = null;
+		String filename = null;
 
 		try {
 			String tempUrl = null;
@@ -144,17 +147,16 @@ public class MovieInfoCollectService {
 			}
 
 			imgUrl = tmpDoc.getElementsByClass("mainphoto").get(0).getElementsByTag("img").get(0).attr("src");
-			// mvInfo.setImgUrl();
-			ImgDownloader.download(imgUrl);
+			filename = imgUrl.substring(imgUrl.lastIndexOf("/") + 1);
+			ImgDownloader.download(imgUrl, filename);
 		} catch (Exception e) {
 			e.printStackTrace();
-			return imgUrl;
-
+			return null;
 		}
-		return imgUrl;
+		return imgUrl + "#@#@" + filename;
 	}
 
-	public static void updateDetailInfo(DoubanMovieInfo mvInfo) throws Exception {
+	public static void updateDetailInfo(MyMovieInfo mvInfo) throws Exception {
 		Document doc = null;
 
 		doc = DocumentHelper.getDocumentByUrl(mvInfo.getRefUrl());
@@ -178,7 +180,8 @@ public class MovieInfoCollectService {
 		if (imgUrl == null) {
 			imgUrl = "";
 		}
-		mvInfo.setImgUrl(imgUrl);
+		mvInfo.setImgUrl(imgUrl.split("#@#@")[0]);
+		mvInfo.setLocalImgFileName(imgUrl.split("#@#@")[1]);
 		mvInfo.setRatingValue(Double.parseDouble(ratingElem.get(0).text()));
 		mvInfo.setSummaryText(summaryElem.get(0).text().trim());
 		mvInfo.setYear(yearElem.get(0).text().replace("(", "").replace(")", ""));

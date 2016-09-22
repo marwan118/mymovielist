@@ -11,8 +11,7 @@ $(document).ready(function() {
             var img = document.createElement("img");
             span.innerHTML = movies.movieList[i].name;
             var imgurl = movies.movieList[i].imgUrl;
-
-            img.src = "../../../db/" + imgurl.substring(imgurl.lastIndexOf("/") + 1);
+            img.src = movies.movieList[i].imgUrl;
             console.log(img.src);
             document.body.appendChild(span);
             document.body.appendChild(img);

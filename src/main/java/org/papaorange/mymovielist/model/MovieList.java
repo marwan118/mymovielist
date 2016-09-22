@@ -3,17 +3,21 @@ package org.papaorange.mymovielist.model;
 import java.util.List;
 
 public class MovieList {
-	private List<DoubanMovieInfo> movieList;
+	private List<MyMovieInfo> movieList;
 
-	public MovieList(List<DoubanMovieInfo> movieList) {
+	public MovieList() {
+
+	}
+
+	public MovieList(List<MyMovieInfo> movieList) {
 		this.movieList = movieList;
 	}
 
-	public List<DoubanMovieInfo> getMovieList() {
+	public List<MyMovieInfo> getMovieList() {
 		return movieList;
 	}
 
-	public void setMovieList(List<DoubanMovieInfo> movieList) {
+	public void setMovieList(List<MyMovieInfo> movieList) {
 		this.movieList = movieList;
 	}
 }

@@ -16,53 +16,56 @@ public class ImgDownloader {
 
 	private static final Logger log = LoggerFactory.getLogger(UpdateMovieDBTaskSchedulerService.class);
 
-	public static String download(String url) throws Exception {
-
-		URL localURL = new URL(url);
-		FileOutputStream fileOutputStream = null;
-		URLConnection connection = localURL.openConnection();
-		HttpURLConnection httpURLConnection = (HttpURLConnection) connection;
-
-		httpURLConnection.setRequestProperty("Accept-Charset", "utf-8");
-		httpURLConnection.setRequestProperty("Content-Type", "application/x-www-form-urlencoded");
-
-		InputStream inputStream = null;
-
-		StringBuffer resultBuffer = new StringBuffer();
-
-		log.info("GET:" + url);
-
-		if (httpURLConnection.getResponseCode() >= 300) {
-			log.warn("GET:" + url + "\n" + "HTTP Request is not success, Response code is "
-					+ httpURLConnection.getResponseCode());
-
-			throw new Exception("HTTP Request is not success, Response code is " + httpURLConnection.getResponseCode());
-		}
-
-		try {
-			inputStream = httpURLConnection.getInputStream();
-			String filename = null;
-			if (httpURLConnection.getContentType().equals("image/jpeg")) {
-				filename = url.substring(url.lastIndexOf("/") + 1);
-			}
-			fileOutputStream = new FileOutputStream(new File("./db/" + filename));
-
-			FileCopyUtils.copy(inputStream, fileOutputStream);
-
-		} finally {
-
-			if (fileOutputStream != null) {
-				fileOutputStream.close();
-			}
-
-			if (inputStream != null) {
-				inputStream.close();
-			}
-
-		}
-
-		return resultBuffer.toString();
-	}
+	// public static String download(String url) throws Exception {
+	//
+	// URL localURL = new URL(url);
+	// FileOutputStream fileOutputStream = null;
+	// URLConnection connection = localURL.openConnection();
+	// HttpURLConnection httpURLConnection = (HttpURLConnection) connection;
+	//
+	// httpURLConnection.setRequestProperty("Accept-Charset", "utf-8");
+	// httpURLConnection.setRequestProperty("Content-Type",
+	// "application/x-www-form-urlencoded");
+	//
+	// InputStream inputStream = null;
+	//
+	// StringBuffer resultBuffer = new StringBuffer();
+	//
+	// log.info("GET:" + url);
+	//
+	// if (httpURLConnection.getResponseCode() >= 300) {
+	// log.warn("GET:" + url + "\n" + "HTTP Request is not success, Response
+	// code is "
+	// + httpURLConnection.getResponseCode());
+	//
+	// throw new Exception("HTTP Request is not success, Response code is " +
+	// httpURLConnection.getResponseCode());
+	// }
+	//
+	// try {
+	// inputStream = httpURLConnection.getInputStream();
+	// String filename = null;
+	// if (httpURLConnection.getContentType().equals("image/jpeg")) {
+	// filename = url.substring(url.lastIndexOf("/") + 1);
+	// }
+	// fileOutputStream = new FileOutputStream(new File("./db/" + filename));
+	//
+	// FileCopyUtils.copy(inputStream, fileOutputStream);
+	//
+	// } finally {
+	//
+	// if (fileOutputStream != null) {
+	// fileOutputStream.close();
+	// }
+	//
+	// if (inputStream != null) {
+	// inputStream.close();
+	// }
+	//
+	// }
+	//
+	// return resultBuffer.toString();
+	// }
 
 	public static String download(String url, String filename) throws Exception {
 

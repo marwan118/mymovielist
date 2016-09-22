@@ -6,7 +6,7 @@ import java.io.OutputStreamWriter;
 import java.util.ArrayList;
 import java.util.List;
 
-import org.papaorange.mymovielist.model.DoubanMovieInfo;
+import org.papaorange.mymovielist.model.MyMovieInfo;
 import org.papaorange.mymovielist.model.LocalMovieInfo;
 import org.papaorange.mymovielist.model.MovieList;
 import org.slf4j.Logger;
@@ -19,7 +19,7 @@ import com.alibaba.fastjson.JSON;
 @Component
 public class UpdateMovieDBTaskSchedulerService {
 
-	private List<DoubanMovieInfo> dbMvInfoList = new ArrayList<DoubanMovieInfo>();
+	private List<MyMovieInfo> dbMvInfoList = new ArrayList<MyMovieInfo>();
 	private List<LocalMovieInfo> localMvInfoList = new ArrayList<LocalMovieInfo>();
 	private boolean firstUpdate = true;
 	private boolean localMovieUpdate = false;
@@ -62,7 +62,7 @@ public class UpdateMovieDBTaskSchedulerService {
 			if (mvName.equals("unknown") && mvYear.equals("unknown")) {
 				continue;
 			}
-			DoubanMovieInfo info = MovieInfoCollectService.getDoubanMovieInfoObjectCollectionByName(mv);
+			MyMovieInfo info = MovieInfoCollectService.getDoubanMovieInfoObjectCollectionByName(mv);
 			if (info == null) {
 				continue;
 			}

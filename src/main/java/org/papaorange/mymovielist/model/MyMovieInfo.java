@@ -2,17 +2,19 @@ package org.papaorange.mymovielist.model;
 
 import com.alibaba.fastjson.annotation.JSONField;
 
-public class DoubanMovieInfo {
+public class MyMovieInfo {
 
 	private String name;
 
 	private String imgUrl;
-	
+
 	private String refUrl;
 
 	private String alias;
-	
+
 	private String year;
+
+	private String localImgFileName;
 
 	private double ratingValue;
 
@@ -71,15 +73,25 @@ public class DoubanMovieInfo {
 	public void setYear(String year) {
 		this.year = year;
 	}
-	
-	@JSONField(name="url")
+
+	@JSONField(name = "url")
 	public String getRefUrl() {
 		return refUrl;
 	}
-	
-	@JSONField(name="url")
+
+	@JSONField(name = "url")
 	public void setRefUrl(String refUrl) {
 		this.refUrl = refUrl;
+	}
+
+	@JSONField(name = "localname")
+	public String getLocalImgFileName() {
+		return localImgFileName;
+	}
+
+	@JSONField(name = "localname")
+	public void setLocalImgFileName(String localImgFileName) {
+		this.localImgFileName = localImgFileName;
 	}
 
 }
