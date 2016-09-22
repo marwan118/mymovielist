@@ -2,20 +2,20 @@ package org.papaorange.mymovielist.service;
 
 import java.io.File;
 import java.io.IOException;
-import java.net.MalformedURLException;
 import java.net.URL;
 import java.util.ArrayList;
 import java.util.List;
-
 import org.jsoup.Jsoup;
 import org.jsoup.nodes.Document;
 import org.jsoup.select.Elements;
 import org.papaorange.mymovielist.model.DoubanMovieInfo;
+import org.papaorange.mymovielist.model.ImdbImageItem;
+import org.papaorange.mymovielist.model.ImdbMediaViewerModelWrapperObject;
 import org.papaorange.mymovielist.model.LocalMovieInfo;
 import org.papaorange.mymovielist.utils.AppConfigLoader;
+import org.papaorange.mymovielist.utils.DocumentHelper;
 import org.papaorange.mymovielist.utils.HttpGetUtil;
 import org.papaorange.mymovielist.utils.ImgDownloader;
-
 import com.alibaba.fastjson.JSON;
 import com.alibaba.fastjson.TypeReference;
 
@@ -88,30 +88,42 @@ public class MovieInfoCollectService {
 		}
 	}
 
-	public static void updateDetailInfo(DoubanMovieInfo mvInfo) throws Exception {
-		URL url = null;
-		Document doc = null;
+	private static String downloadImgFromIMDB(Document doc) {
+		String imgUrl = null;
+
 		try {
-			url = new URL(mvInfo.getRefUrl());
-		} catch (MalformedURLException e) {
+			String imdbMovieUrl = doc.getElementsByAttributeValueContaining("href", "http://www.imdb.com/title").get(0)
+					.attr("href");
+
+			Document imdbDoc = DocumentHelper.getDocumentByUrl(imdbMovieUrl);
+
+			imdbDoc = DocumentHelper.getDocumentByUrl(
+					"http://www.imdb.com" + imdbDoc.getElementsByClass("poster").get(0).child(0).attr("href"));
+
+			String imgJsonString = imdbDoc.getElementById("imageJson").html();/* 取imdb页面中json */
+
+			ImdbMediaViewerModelWrapperObject wrapperObject = JSON.parseObject(imgJsonString,
+					ImdbMediaViewerModelWrapperObject.class);
+			List<ImdbImageItem> images = wrapperObject.getModel().getAllImages();
+			for (ImdbImageItem item : images) {
+				if (item.getId().equals(wrapperObject.getStartingConst())) {
+					imgUrl = item.getSrc();
+					break;
+				}
+			}
+			ImgDownloader.download(imgUrl, imdbMovieUrl.substring(imdbMovieUrl.lastIndexOf("/") + 1));
+		} catch (Exception e) {
 			e.printStackTrace();
+			return imgUrl;
 		}
+		return imgUrl;
+	}
+
+	public static String downloadImgFromDouban(String coverUrl) {
+		String imgUrl = null;
+
 		try {
-			doc = Jsoup.parse(url, 30000);
-			// System.err.println(doc);
-		} catch (IOException e) {
-			e.printStackTrace();
-		}
-		Elements summaryElem = doc.getElementsByAttributeValue("property", "v:summary");
-
-		Elements yearElem = doc.getElementsByClass("year");
-
-		Elements ratingElem = doc.getElementsByAttributeValue("property", "v:average");
-
-		String coverUrl = doc.getElementsByClass("nbgnbg").get(0).attr("href");
-
-		{
-			String tempUrl;
+			String tempUrl = null;
 			Document tmpDoc = null;
 			try {
 				tmpDoc = Jsoup.parse(new URL(coverUrl), 30000);
@@ -130,10 +142,43 @@ public class MovieInfoCollectService {
 			} catch (IOException e) {
 				e.printStackTrace();
 			}
-			mvInfo.setImgUrl(tmpDoc.getElementsByClass("mainphoto").get(0).getElementsByTag("img").get(0).attr("src"));
-			ImgDownloader.download(mvInfo.getImgUrl());
+
+			imgUrl = tmpDoc.getElementsByClass("mainphoto").get(0).getElementsByTag("img").get(0).attr("src");
+			// mvInfo.setImgUrl();
+			ImgDownloader.download(imgUrl);
+		} catch (Exception e) {
+			e.printStackTrace();
+			return imgUrl;
+
+		}
+		return imgUrl;
+	}
+
+	public static void updateDetailInfo(DoubanMovieInfo mvInfo) throws Exception {
+		Document doc = null;
+
+		doc = DocumentHelper.getDocumentByUrl(mvInfo.getRefUrl());
+
+		Elements summaryElem = doc.getElementsByAttributeValue("property", "v:summary");
+
+		Elements yearElem = doc.getElementsByClass("year");
+
+		Elements ratingElem = doc.getElementsByAttributeValue("property", "v:average");
+
+		String coverUrl = doc.getElementsByClass("nbgnbg").get(0).attr("href");
+
+		// // 获取imdb海报
+
+		String imgUrl = downloadImgFromIMDB(doc);
+
+		if (imgUrl == null) {
+			imgUrl = downloadImgFromDouban(coverUrl);
 		}
 
+		if (imgUrl == null) {
+			imgUrl = "";
+		}
+		mvInfo.setImgUrl(imgUrl);
 		mvInfo.setRatingValue(Double.parseDouble(ratingElem.get(0).text()));
 		mvInfo.setSummaryText(summaryElem.get(0).text().trim());
 		mvInfo.setYear(yearElem.get(0).text().replace("(", "").replace(")", ""));
