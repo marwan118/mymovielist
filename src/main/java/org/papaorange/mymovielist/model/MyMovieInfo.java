@@ -11,6 +11,8 @@ public class MyMovieInfo {
 	private String refUrl;
 
 	private String alias;
+	
+	private String localMvFileName;
 
 	private String year;
 
@@ -84,14 +86,24 @@ public class MyMovieInfo {
 		this.refUrl = refUrl;
 	}
 
-	@JSONField(name = "localname")
+	@JSONField(name = "imgFileName")
 	public String getLocalImgFileName() {
 		return localImgFileName;
 	}
 
-	@JSONField(name = "localname")
+	@JSONField(name = "imgFileName")
 	public void setLocalImgFileName(String localImgFileName) {
 		this.localImgFileName = localImgFileName;
+	}
+
+	@JSONField(name = "localMovieFileName")
+	public String getLocalMvFileName() {
+		return localMvFileName;
+	}
+
+	@JSONField(name = "localMovieFileName")
+	public void setLocalMvFileName(String localMvFileName) {
+		this.localMvFileName = localMvFileName;
 	}
 
 }

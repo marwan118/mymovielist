@@ -6,6 +6,7 @@ import java.io.IOException;
 import java.io.InputStreamReader;
 
 import org.papaorange.mymovielist.model.MovieList;
+import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
@@ -14,6 +15,7 @@ import com.alibaba.fastjson.JSON;
 @RestController
 public class GetMyMovieListController {
 
+	@CrossOrigin
 	@RequestMapping("/mymovies")
 	public MovieList getMyMovieList() throws IOException {
 

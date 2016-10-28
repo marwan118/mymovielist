@@ -1,5 +1,8 @@
 package org.papaorange.mymovielist.service;
 
+import java.io.File;
+import java.io.FileInputStream;
+import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.OutputStreamWriter;
@@ -19,63 +22,86 @@ import com.alibaba.fastjson.JSON;
 @Component
 public class UpdateMovieDBTaskSchedulerService {
 
-	private List<MyMovieInfo> dbMvInfoList = new ArrayList<MyMovieInfo>();
-	private List<LocalMovieInfo> localMvInfoList = new ArrayList<LocalMovieInfo>();
-	private boolean firstUpdate = true;
-	private boolean localMovieUpdate = false;
+	
 	private static final Logger log = LoggerFactory.getLogger(UpdateMovieDBTaskSchedulerService.class);
 
 	@Scheduled(fixedRate = 30 * 1000)
-	public void updateMovieDBTask() throws InterruptedException {
+	public void updateMovieDBTask() throws InterruptedException, FileNotFoundException, IOException {
 
+		
+		 MovieList myMovieListFromDB = new MovieList();
+		 List<MyMovieInfo> mvInfoListFromDB = new ArrayList<MyMovieInfo>();
+		 boolean localMovieUpdate = false;
+	
+		 
 		log.info("checking local movie folder...");
-
+	
 		List<LocalMovieInfo> mvList = MovieInfoCollectService.getLocalMovieInfo();
-		if (firstUpdate) {
-			localMvInfoList = mvList;
-			firstUpdate = false;
-			localMovieUpdate = true;
-		}
-		if (localMvInfoList.size() == mvList.size()) {
-			for (int i = 0; i < mvList.size(); i++) {
-				if (localMvInfoList.get(i).getFileName().equals(mvList.get(i).getFileName())) {
-					continue;
-				} else {
+		if (new File("db/movieDB.json").exists()) {
+			myMovieListFromDB = JSON.parseObject(new FileInputStream("db/movieDB.json"), MovieList.class);
+			mvInfoListFromDB = myMovieListFromDB.getMovieList();
+
+			List<String> dbMvNames = new ArrayList<String>();
+
+			for (MyMovieInfo item : mvInfoListFromDB) {
+				dbMvNames.add(item.getLocalMvFileName());
+			}
+
+			int count = mvList.size();
+			if (dbMvNames.size() == mvList.size()) {
+				for (int i = 0; i < count; i++) {
+					if (dbMvNames.contains(mvList.get(i).getMovieName())) {
+						dbMvNames.remove(mvList.get(i).getMovieName());
+						continue;
+					} else {
+						localMovieUpdate = true;
+					}
+				}
+
+				if (dbMvNames.size() != 0) {
 					localMovieUpdate = true;
 				}
+			} else {
+				localMovieUpdate = true;
 			}
-		} else {
-			localMovieUpdate = true;
 		}
-		if (localMovieUpdate == false) {
+
+		if (localMovieUpdate == false && new File("db/movieDB.json").exists()) {
+			if (localMovieUpdate == false) {
+				log.error("LocalMovie not updated...skip");
+			}
+
 			return;
 		}
-
-		log.info("local movie folder changed,updating moviedb...");
-
-		dbMvInfoList.clear();
-		localMovieUpdate = false;
-
+		if (new File("db/movieDB.json").exists() == false) {
+			log.error("LocalMovieDB does not Exist...Init");
+		}
 		for (LocalMovieInfo mv : mvList) {
 			String mvName = mv.getMovieName();
 			String mvYear = mv.getYear();
 			if (mvName.equals("unknown") && mvYear.equals("unknown")) {
 				continue;
 			}
-			MyMovieInfo info = MovieInfoCollectService.getDoubanMovieInfoObjectCollectionByName(mv);
+			log.error("Update movie: [" + mvName + "] from internet...");
+
+			MyMovieInfo info = new MyMovieInfo(); 
+			info = MovieInfoCollectService.getDoubanMovieInfoObjectCollectionByName(mv);
+			
+
 			if (info == null) {
 				continue;
 			}
 			try {
+				
 				MovieInfoCollectService.updateDetailInfo(info);
 			} catch (Exception e) {
 				// TODO Auto-generated catch block
 				e.printStackTrace();
 			}
-			dbMvInfoList.add(info);
+			mvInfoListFromDB.add(info);
 		}
 
-		String dbString = JSON.toJSONString(new MovieList(dbMvInfoList));
+		String dbString = JSON.toJSONString(new MovieList(mvInfoListFromDB));
 
 		OutputStreamWriter osw = null;
 		FileOutputStream fos = null;

@@ -84,6 +84,7 @@ public class MovieInfoCollectService {
 		if (list.size() == 0) {
 			return null;
 		} else {
+			list.get(mvIdx).setLocalMvFileName(info.getMovieName());
 			return list.get(mvIdx);
 		}
 	}
