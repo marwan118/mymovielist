@@ -34,7 +34,7 @@ public class UpdateMovieDBTaskSchedulerService {
 		 boolean localMovieUpdate = false;
 	
 		 
-		log.info("checking local movie folder...");
+		log.info("\033[32mchecking local movie folder...");
 	
 		List<LocalMovieInfo> mvList = MovieInfoCollectService.getLocalMovieInfo();
 		if (new File("db/movieDB.json").exists()) {
@@ -68,13 +68,13 @@ public class UpdateMovieDBTaskSchedulerService {
 
 		if (localMovieUpdate == false && new File("db/movieDB.json").exists()) {
 			if (localMovieUpdate == false) {
-				log.error("LocalMovie not updated...skip");
+				log.info("\033[32mLocalMovie not updated...skip");
 			}
 
 			return;
 		}
 		if (new File("db/movieDB.json").exists() == false) {
-			log.error("LocalMovieDB does not Exist...Init");
+			log.info("\033[32mLocalMovieDB does not Exist...Init");
 		}
 		for (LocalMovieInfo mv : mvList) {
 			String mvName = mv.getMovieName();
@@ -82,7 +82,7 @@ public class UpdateMovieDBTaskSchedulerService {
 			if (mvName.equals("unknown") && mvYear.equals("unknown")) {
 				continue;
 			}
-			log.error("Update movie: [" + mvName + "] from internet...");
+			log.error("\033[32mUpdate movie: [" + mvName + "] from internet...");
 
 			MyMovieInfo info = new MyMovieInfo(); 
 			info = MovieInfoCollectService.getDoubanMovieInfoObjectCollectionByName(mv);

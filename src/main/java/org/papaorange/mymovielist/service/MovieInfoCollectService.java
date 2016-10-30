@@ -15,7 +15,7 @@ import org.papaorange.mymovielist.model.LocalMovieInfo;
 import org.papaorange.mymovielist.utils.AppConfigLoader;
 import org.papaorange.mymovielist.utils.DocumentHelper;
 import org.papaorange.mymovielist.utils.HttpGetUtil;
-import org.papaorange.mymovielist.utils.ImgDownloader;
+
 import com.alibaba.fastjson.JSON;
 import com.alibaba.fastjson.TypeReference;
 
@@ -114,7 +114,7 @@ public class MovieInfoCollectService {
 				}
 			}
 			filename = imdbMovieUrl.substring(imdbMovieUrl.lastIndexOf("/") + 1) + ".jpg";
-			ImgDownloader.download(imgUrl, filename);
+			ImgDownloadService.download(imgUrl, filename);
 		} catch (Exception e) {
 			e.printStackTrace();
 			return null;
@@ -149,7 +149,7 @@ public class MovieInfoCollectService {
 
 			imgUrl = tmpDoc.getElementsByClass("mainphoto").get(0).getElementsByTag("img").get(0).attr("src");
 			filename = imgUrl.substring(imgUrl.lastIndexOf("/") + 1);
-			ImgDownloader.download(imgUrl, filename);
+			ImgDownloadService.download(imgUrl, filename);
 		} catch (Exception e) {
 			e.printStackTrace();
 			return null;
