@@ -25,7 +25,7 @@ public class UpdateMovieDBTaskSchedulerService {
 	
 	private static final Logger log = LoggerFactory.getLogger(UpdateMovieDBTaskSchedulerService.class);
 
-	@Scheduled(fixedRate = 30 * 1000)
+//	@Scheduled(fixedRate = 30 * 1000)
 	public void updateMovieDBTask() throws InterruptedException, FileNotFoundException, IOException {
 
 		
