@@ -23,10 +23,10 @@ public class MovieDBBuilderService
 
     private static final Logger log = Logger.getLogger(MovieDBBuilderService.class);
 
-    public static void updateMovieDBTask() throws InterruptedException, FileNotFoundException, IOException
+    public static void updateMovieDBTask() throws FileNotFoundException, IOException
     {
 
-	MovieDBObject movieDBObject = new MovieDBObject();
+	MovieDBObject movieDBObject = null;
 	List<MyMovieInfo> mvInfoListFromDB = new ArrayList<MyMovieInfo>();
 
 	log.info("获取本地电影目录列表...");

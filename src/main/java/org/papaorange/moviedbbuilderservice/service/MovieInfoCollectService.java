@@ -58,7 +58,7 @@ public class MovieInfoCollectService
 	return localMovieInfos;
     }
 
-    public static MyMovieInfo getDoubanMovieInfoObjectCollectionByName(LocalMovieInfo info) throws InterruptedException
+    public static MyMovieInfo getDoubanMovieInfoObjectCollectionByName(LocalMovieInfo info)
     {
 
 	// 防止被BAN
@@ -84,7 +84,7 @@ public class MovieInfoCollectService
 	for (int i = 0; i < list.size(); i++)
 	{
 	    if (list.get(i).getAlias().toLowerCase().replace(":", "").replace(" ", "").trim()
-		    .equals(info.getMovieName().toLowerCase().replace(" ","").trim()))
+		    .equals(info.getMovieName().toLowerCase().replace(" ", "").trim()))
 	    {
 		// 记录match的次数与顺序，如果没有全命中，选取第一个matchIdx作为优选结果
 		matchIdxArray[i] = 1;

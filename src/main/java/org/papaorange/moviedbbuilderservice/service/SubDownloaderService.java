@@ -174,13 +174,16 @@ public class SubDownloaderService
 	    log.info("没有查询到相应字幕...");
 	    return;
 	}
+	int i = 0;
 	for (SubItem subItem : items)
 	{
 	    String link = subItem.getFiles()[0].getLink();
 	    String oldExt = filePath.substring(filePath.lastIndexOf(".") + 1);
-	    String subPath = filePath.replace(oldExt, subItem.getFiles()[0].getSubExt());
-	    System.out.println(oldExt);
-	    System.out.println(link);
+	    String subPath = filePath.replace(oldExt, "chs." + (i++) + "." + subItem.getFiles()[0].getSubExt());
+	    // System.out.println(oldExt);
+	    // System.out.println(link);
+	    log.info("下载字幕:" + subPath);
+
 	    try
 	    {
 		ResDownloader.download(link, subPath);

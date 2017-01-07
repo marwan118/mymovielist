@@ -20,21 +20,11 @@ public class GetMyMovieListController
 
     private static final Logger log = Logger.getLogger(GetMyMovieListController.class);
 
-    
     @CrossOrigin
     @RequestMapping("/mymovies")
     public MovieDBObject getMyMovieList() throws IOException
     {
 
-	try
-	{
-	    MovieDBBuilderService.updateMovieDBTask();
-	}
-	catch (InterruptedException e)
-	{
-	    log.error("更新电影数据库失败...");
-	    e.printStackTrace();
-	}
 	String jsonString = "";
 	BufferedReader reader = null;
 	FileInputStream in = new FileInputStream("db/movieDB.json");
