@@ -10,9 +10,9 @@ import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Component;
 
 @Component
-public class checkMovieStatusTask
+public class CheckMovieStatusTask
 {
-    private static final Logger log = Logger.getLogger(checkMovieStatusTask.class);
+    private static final Logger log = Logger.getLogger(CheckMovieStatusTask.class);
 
     private static String lastUpdateTime = "";
 

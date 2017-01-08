@@ -15,6 +15,7 @@ import org.apache.log4j.Logger;
 import org.papaorange.moviedbbuilderservice.model.LocalMovieInfo;
 import org.papaorange.moviedbbuilderservice.model.MovieDBObject;
 import org.papaorange.moviedbbuilderservice.model.MyMovieInfo;
+import org.papaorange.moviedbbuilderservice.utils.AppConfigLoader;
 
 import com.alibaba.fastjson.JSON;
 
@@ -32,10 +33,12 @@ public class MovieDBBuilderService
 	log.info("获取本地电影目录列表...");
 	Map<String, LocalMovieInfo> movieToCollect = MovieInfoCollectService.getLocalMovieInfoAsMap();
 	log.info("本地共有电影" + movieToCollect.size() + "部...");
-	if (new File("db/movieDB.json").exists())
+	String movieDBPath = AppConfigLoader.getProp("MovieDBOutputPath") + "movieDB.json";
+	if (new File(movieDBPath).exists())
 	{
 	    log.info("找到movieDB.json文件,追加解析模式...");
-	    movieDBObject = JSON.parseObject(new FileInputStream("db/movieDB.json"), MovieDBObject.class);
+
+	    movieDBObject = JSON.parseObject(new FileInputStream(movieDBPath), MovieDBObject.class);
 	    mvInfoListFromDB = movieDBObject.getMovieList();
 
 	    List<MyMovieInfo> tobeDeleteItemList = new ArrayList<MyMovieInfo>();
@@ -55,7 +58,8 @@ public class MovieDBBuilderService
 	    for (MyMovieInfo info : tobeDeleteItemList)
 	    {
 		mvInfoListFromDB.remove(info);
-		FileUtils.forceDelete(new File("./db/" + info.getLocalImgFileName()));
+		FileUtils.forceDelete(
+			new File(AppConfigLoader.getProp("MovieDBOutputPath") + info.getLocalImgFileName()));
 	    }
 
 	}
@@ -118,7 +122,7 @@ public class MovieDBBuilderService
 
 	try
 	{
-	    fos = new FileOutputStream("db/movieDB.json");
+	    fos = new FileOutputStream(movieDBPath);
 	    osw = new OutputStreamWriter(fos, "UTF-8");
 	    osw.write(dbString);
 	    osw.flush();

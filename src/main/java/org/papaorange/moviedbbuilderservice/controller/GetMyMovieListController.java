@@ -6,6 +6,7 @@ import java.io.IOException;
 import java.io.InputStreamReader;
 
 import org.papaorange.moviedbbuilderservice.model.MovieDBObject;
+import org.papaorange.moviedbbuilderservice.utils.AppConfigLoader;
 import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
@@ -26,7 +27,9 @@ public class GetMyMovieListController
 
 	String jsonString = "";
 	BufferedReader reader = null;
-	FileInputStream in = new FileInputStream("db/movieDB.json");
+	String movieDBPath = AppConfigLoader.getProp("MovieDBOutputPath") + "movieDB.json";
+
+	FileInputStream in = new FileInputStream(movieDBPath);
 
 	try
 	{
