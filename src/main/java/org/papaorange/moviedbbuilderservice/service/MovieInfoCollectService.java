@@ -224,24 +224,25 @@ public class MovieInfoCollectService
 
 	String coverUrl = doc.getElementsByClass("nbgnbg").get(0).attr("href");
 
-	// // 获取imdb海报
-
-	String imgUrl = downloadImgFromIMDB(doc);
-
-	if (imgUrl == null)
-	{
-	    imgUrl = downloadImgFromDouban(coverUrl);
-	}
-
-	if (imgUrl == null)
-	{
-	    imgUrl = "";
-	}
-	mvInfo.setImgUrl(imgUrl.split("#@#@")[0]);
-	mvInfo.setLocalImgFileName(imgUrl.split("#@#@")[1]);
+	// // // 获取imdb海报
+	//
+	// String imgUrl = downloadImgFromIMDB(doc);
+	//
+	// if (imgUrl == null)
+	// {
+	// imgUrl = downloadImgFromDouban(coverUrl);
+	// }
+	//
+	// if (imgUrl == null)
+	// {
+	// imgUrl = "";
+	// }
+	// mvInfo.setImgUrl(imgUrl.split("#@#@")[0]);
+	// mvInfo.setLocalImgFileName(imgUrl.split("#@#@")[1]);
 	mvInfo.setRatingValue(Double.parseDouble(ratingElem.get(0).text()));
 	mvInfo.setSummaryText(summaryElem.get(0).text().trim());
-	mvInfo.setYear(yearElem.get(0).text().replace("(", "").replace(")", ""));
+	// mvInfo.setYear(yearElem.get(0).text().replace("(", "").replace(")",
+	// ""));
 
     }
 }

@@ -15,6 +15,7 @@ import org.apache.log4j.Logger;
 import org.papaorange.moviedbbuilderservice.model.LocalMovieInfo;
 import org.papaorange.moviedbbuilderservice.model.MovieDBObject;
 import org.papaorange.moviedbbuilderservice.model.MyMovieInfo;
+import org.papaorange.moviedbbuilderservice.model.OMDBItem;
 import org.papaorange.moviedbbuilderservice.utils.AppConfigLoader;
 
 import com.alibaba.fastjson.JSON;
@@ -58,10 +59,10 @@ public class MovieDBBuilderService
 	    for (MyMovieInfo info : tobeDeleteItemList)
 	    {
 		mvInfoListFromDB.remove(info);
-		FileUtils.forceDelete(
-			new File(AppConfigLoader.getProp("MovieDBOutputPath") + info.getLocalImgFileName()));
+		// FileUtils.forceDelete(
+		// new File(AppConfigLoader.getProp("MovieDBOutputPath") +
+		// info.getLocalImgFileName()));
 	    }
-
 	}
 	else
 	{
@@ -80,7 +81,10 @@ public class MovieDBBuilderService
 	    log.info("正在从网络下载电影信息:" + (i++) + "/" + movieToCollect.size() + " 电影名称:[" + mvName + "]");
 
 	    MyMovieInfo info = new MyMovieInfo();
-	    info = MovieInfoCollectService.getDoubanMovieInfoObjectCollectionByName(mv);
+	    // info =
+	    // MovieInfoCollectServiceD.getDoubanMovieInfoObjectCollectionByName(mv);
+	    info = MovieInfoDownloaderServiceOMDB.downloadMovieInfoFromOMDB(mv);
+	    info = MovieInfoDownloaderServiceDouban.updateMovieInfoFormDouban(info);
 
 	    if (info == null)
 	    {
