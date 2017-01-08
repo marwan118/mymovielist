@@ -32,7 +32,7 @@ public class MovieInfoDownloaderServiceDouban
 	    info.setAlias(temp.getAlias());
 	    info.setRefUrl(temp.getRefUrl());
 	    info.setName(temp.getName());
-
+	    info.setYear(temp.getYear());
 	    return info;
 	}
     }

@@ -10,12 +10,10 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 
-import org.apache.commons.io.FileUtils;
 import org.apache.log4j.Logger;
 import org.papaorange.moviedbbuilderservice.model.LocalMovieInfo;
 import org.papaorange.moviedbbuilderservice.model.MovieDBObject;
 import org.papaorange.moviedbbuilderservice.model.MyMovieInfo;
-import org.papaorange.moviedbbuilderservice.model.OMDBItem;
 import org.papaorange.moviedbbuilderservice.utils.AppConfigLoader;
 
 import com.alibaba.fastjson.JSON;

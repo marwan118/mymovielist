@@ -218,11 +218,11 @@ public class MovieInfoCollectService
 
 	Elements summaryElem = doc.getElementsByAttributeValue("property", "v:summary");
 
-	Elements yearElem = doc.getElementsByClass("year");
+//	Elements yearElem = doc.getElementsByClass("year");
 
 	Elements ratingElem = doc.getElementsByAttributeValue("property", "v:average");
 
-	String coverUrl = doc.getElementsByClass("nbgnbg").get(0).attr("href");
+//	String coverUrl = doc.getElementsByClass("nbgnbg").get(0).attr("href");
 
 	// // // 获取imdb海报
 	//

@@ -1,7 +1,5 @@
 package org.papaorange.moviedbbuilderservice.service;
 
-import java.net.URLEncoder;
-
 import org.papaorange.moviedbbuilderservice.model.LocalMovieInfo;
 import org.papaorange.moviedbbuilderservice.model.MyMovieInfo;
 import org.papaorange.moviedbbuilderservice.model.OMDBItem;
