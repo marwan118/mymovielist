@@ -58,8 +58,8 @@ public class MovieDBBuilderService
 	    for (MyMovieInfo info : tobeDeleteItemList)
 	    {
 		mvInfoListFromDB.remove(info);
-		FileUtils.forceDelete(
-			new File(AppConfigLoader.getProp("MovieDBOutputPath") + info.getLocalImgFileName()));
+//		FileUtils.forceDelete(
+//			new File(AppConfigLoader.getProp("MovieDBOutputPath") + info.getLocalImgFileName()));
 	    }
 
 	}
